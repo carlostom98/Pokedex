@@ -20,7 +20,7 @@ sealed class DestinationScreen(
         DestinationScreen("PokemonDetailScreen", listOf(NavArgs.DominantColor, NavArgs.PokemonName))
 }
 
-enum class NavArgs(val key: String, val type: NavType<*>) {
+private enum class NavArgs(val key: String, val type: NavType<*>) {
     DominantColor("dominantColor", NavType.IntType),
     PokemonName("pokemonName", NavType.StringType)
 }

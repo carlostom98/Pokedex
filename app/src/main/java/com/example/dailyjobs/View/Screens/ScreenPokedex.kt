@@ -49,11 +49,17 @@ fun ScreenPokedex(navHost:NavHostController){
             .padding(vertical = 4.dp, horizontal = 4.dp)
             .fillMaxWidth()) {
             Row(modifier=Modifier.fillMaxWidth()) {
-                Text(text = "# Of Pokemon    Name Of Pokemon   ")
+                Text(text = "# Of Pokemon    Name Of Pokemon  $pokemonName  ")
             }
             IconButton(onClick = {animationState=!animationState}) {
                 Icon(imageVector = Icons.Default.Favorite, contentDescription ="Favorite Button", tint= color, modifier = Modifier.rotate(rotation))
             }
+        }
+    }
+
+    LaunchedEffect(pokemon){
+        pokemon?.let {
+            pokemonName=it.name
         }
     }
 }
