@@ -1,6 +1,5 @@
 package com.example.dailyjobs.Model
 
-class GetPokemon(var id:Int) {
-    private val servicePokemon = Services()
-    suspend fun invoke() = servicePokemon.getPokemonInfo(id)
+class GetPokemon(private val services:Services) {
+    suspend fun invoke(id:Int) = services.getPokemonInfo(id)
 }

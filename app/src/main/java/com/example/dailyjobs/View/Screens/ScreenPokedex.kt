@@ -51,7 +51,9 @@ fun ScreenPokedex(navHost:NavHostController){
             Row(modifier=Modifier.fillMaxWidth()) {
                 Text(text = "# Of Pokemon    Name Of Pokemon  $pokemonName  ")
             }
-            IconButton(onClick = {animationState=!animationState}) {
+            IconButton(onClick = {animationState=!animationState
+            pokemonViewModel.getPokemonInfo(1)
+            }) {
                 Icon(imageVector = Icons.Default.Favorite, contentDescription ="Favorite Button", tint= color, modifier = Modifier.rotate(rotation))
             }
         }

@@ -1,10 +1,10 @@
 package com.example.dailyjobs.Model
 
 import com.example.dailyjobs.Model.PokemonDataModel.PokemonModel
-import org.koin.androidx.compose.inject
+import retrofit2.Retrofit
 
-class Services(private val retrofitPokemon:ApiService) {
-
-    suspend fun getPokemonInfo(id:Int):PokemonModel?
-    { return retrofitPokemon.getPokemon(id).body()}
+class Services(private val retrofitService: ApiService) {
+    suspend fun getPokemonInfo(id: Int): PokemonModel? {
+        return retrofitService.getPokemon(id).body()
+    }
 }
