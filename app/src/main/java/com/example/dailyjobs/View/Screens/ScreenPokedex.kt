@@ -28,6 +28,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun ScreenPokedex(navHost:NavHostController){
 
+    var pokemonNumber by remember { mutableStateOf("") }
     var animationState by remember { mutableStateOf(true) }
     val transition = updateTransition(targetState = animationState, label = null)
 
@@ -50,9 +51,10 @@ fun ScreenPokedex(navHost:NavHostController){
             .fillMaxWidth()) {
             Row(modifier=Modifier.fillMaxWidth()) {
                 Text(text = "# Of Pokemon    Name Of Pokemon  $pokemonName  ")
+                TextField(value = pokemonNumber , onValueChange ={ pokemonNumber=it})
             }
             IconButton(onClick = {animationState=!animationState
-            pokemonViewModel.getPokemonInfo(1)
+            pokemonViewModel.getPokemonInfo(pokemonNumber.toInt())
             }) {
                 Icon(imageVector = Icons.Default.Favorite, contentDescription ="Favorite Button", tint= color, modifier = Modifier.rotate(rotation))
             }
@@ -60,8 +62,10 @@ fun ScreenPokedex(navHost:NavHostController){
     }
 
     LaunchedEffect(pokemon){
-        pokemon?.let {
-            pokemonName=it.name
+        pokemon?.let { it ->
+            it.name?.let { pokName->
+                pokemonName=pokName
+            }
         }
     }
 }
