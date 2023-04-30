@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.dailyjobs.View.Screens.PokemonInformation
 import com.example.dailyjobs.View.Screens.ScreenPokedex
 
 @Composable
@@ -16,15 +17,12 @@ fun NavigateScreens(navigationHost: NavHostController) {
         }
         composable(
             DestinationScreen.PokemonDetailScreen.baseRoute,
-            arguments = DestinationScreen.PokemonDetailScreen.navArgument) {
-            val dominantColor = remember{
-                val color = it.arguments?.getInt("dominantColor")
-                requireNotNull(color) { "Color must contain a value" }
-            }
+            arguments = DestinationScreen.PokemonDetailScreen.navArgument
+        ) {backStackEntry->
             val pokemonName = remember{
-                val pokemonName =it.arguments?.getString("pokemonName")
-                requireNotNull(pokemonName){"PokemonName is required"}
+                backStackEntry.arguments?.getString(NavArgs.PokemonName.key)
             }
+            PokemonInformation(pokemonName = pokemonName)
         }
     }
 }

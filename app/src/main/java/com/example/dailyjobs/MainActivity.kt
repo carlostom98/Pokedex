@@ -11,7 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.dailyjobs.View.NavigateScreens
 import com.example.dailyjobs.ui.theme.DailyJobsTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

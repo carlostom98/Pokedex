@@ -4,8 +4,8 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
 sealed class DestinationScreen(
-    private val route: String,
-    private val navArgs: List<NavArgs> = emptyList(),
+    val route: String,
+    val navArgs: List<NavArgs> = emptyList(),
 ) {
     val baseRoute = run {
         val argsKeys = navArgs.map { "{${it.key}}" }
@@ -17,10 +17,16 @@ sealed class DestinationScreen(
 
     object PokedexScreen : DestinationScreen("PokedexScreen")
     object PokemonDetailScreen :
-        DestinationScreen("PokemonDetailScreen", listOf(NavArgs.DominantColor, NavArgs.PokemonName))
+        DestinationScreen(
+            "PokemonDetailScreen",
+            listOf(NavArgs.PokemonName)
+        ) {
+        fun withPokemonName(pokemonName: String?) = pokemonName?.let { "$route/$it" } ?: "$route/Not founded Pokemon"
+    }
 }
 
-private enum class NavArgs(val key: String, val type: NavType<*>) {
+enum class NavArgs(val key: String, val type: NavType<*>) {
     DominantColor("dominantColor", NavType.IntType),
-    PokemonName("pokemonName", NavType.StringType)
+    PokemonName("pokemonName", NavType.StringType),
+    PokemonImage("urlImage", NavType.StringType)
 }
