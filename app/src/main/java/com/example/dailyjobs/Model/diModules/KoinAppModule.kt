@@ -14,9 +14,12 @@ val appModule = module {
             .create(ApiService::class.java)
     }
     single {
-        Services(get<ApiService>())
+        Services(get())
     }
     single{
-        GetPokemon(get<Services>())
+        GetPokemon(get())
+    }
+    single {
+        GetPokemonList(get())
     }
 }

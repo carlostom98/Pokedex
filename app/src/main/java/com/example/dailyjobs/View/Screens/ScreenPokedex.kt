@@ -1,113 +1,76 @@
 package com.example.dailyjobs.View.Screens
 
-import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.internal.updateLiveLiteralValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.ActivityNavigator
+
 import androidx.navigation.NavHostController
-import com.example.dailyjobs.Model.PokemonDataModel.PokemonModel
-import com.example.dailyjobs.Model.TestModelRV.Employees
+import com.example.dailyjobs.Model.Pokemon2Model.PokedexProperties
+import com.example.dailyjobs.Model.PokemonListModel.PokemonListEntry
+import com.example.dailyjobs.R
 import com.example.dailyjobs.View.DestinationScreen
 import com.example.dailyjobs.ViewModel.PokemonViewModel.PokemonViewModel
 import com.example.dailyjobs.ViewModel.PokemonViewModel.ViewModelsFactory
 import com.example.dailyjobs.ui.theme.DailyJobsTheme
-import kotlinx.coroutines.delay
+
 
 @Composable
-fun ScreenPokedex(navHost: NavHostController) {
+fun ScreenPokedex(navHost: NavHostController?) {
+    Surface(color = MaterialTheme.colorScheme.primary) {
+        Column {
+            Spacer(modifier = Modifier.height(20.dp))
+            Image(
+                painterResource(id = R.drawable.pokemon_logo),
+                contentDescription = "Pokemon Logo",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(CenterHorizontally),
+                contentScale = ContentScale.FillWidth,
+                colorFilter = ColorFilter.tint(Color.Yellow)
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            SearchBar(
+                hint = "Search Pokemon By Name...", modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
 
-    var pokemonNumber by remember { mutableStateOf("") }
-    var animationState by remember { mutableStateOf(true) }
-    val transition = updateTransition(targetState = animationState, label = null)
-
-    val rotation by transition.animateFloat(transitionSpec = { tween(500) }, label = "") {
-        if (it) 0f else 360f
-    }
-    val color by transition.animateColor(transitionSpec = { tween(500) }, label = "") {
-        if (it) Color.Transparent else Color.Yellow
-    }
-
-    val pokemonViewModel = viewModel<PokemonViewModel>(factory = ViewModelsFactory)
-    val pokemon by pokemonViewModel.pokemonInfo.observeAsState()
-    var pokemonName by remember { mutableStateOf("") }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 8.dp, horizontal = 8.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(vertical = 4.dp, horizontal = 4.dp)
-                .fillMaxWidth()
-        ) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Text(text = "# Of Pokemon    Name Of Pokemon  $pokemonName  ")
-                TextField(value = pokemonNumber, onValueChange = { pokemonNumber = it })
-            }
-            IconButton(onClick = {
-                animationState = !animationState
-                if (pokemonNumber.isNotEmpty()) {
-                    pokemonViewModel.getPokemonInfo(pokemonNumber.toInt())
-                }
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "Favorite Button",
-                    tint = color,
-                    modifier = Modifier.rotate(rotation)
-                )
-            }
-
-            Button(onClick = {
-                navHost.navigate(
-                    DestinationScreen.PokemonDetailScreen.withPokemonName(
-                        pokemonName
-                    )
-                )
-            }) {
-                Text(text = "Next Screen")
-            }
-            //MostrarPokemons()
-        }
-    }
-
-    LaunchedEffect(pokemon) {
-        pokemon?.let { it ->
-            it.name?.let { pokName ->
-                pokemonName = pokName
             }
         }
     }
 }
 
-@Composable
-fun MostrarPokemons(pokemonList: List<PokemonModel>) {
-    LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
-
-    }
-}
 
 @Composable
-fun CardViewPokemons(employees: Employees) {
+fun CardView(listOfModel: PokedexProperties) {
     Surface(
         color = MaterialTheme.colorScheme.primary,
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
@@ -119,9 +82,7 @@ fun CardViewPokemons(employees: Employees) {
         ) {
             Row() {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(text = employees.name)
-                    Text(text = employees.lastName)
-                    Text(text = employees.age.toString())
+
                 }
 
                 Button(onClick = { /*TODO*/ }) {
@@ -131,10 +92,69 @@ fun CardViewPokemons(employees: Employees) {
         }
     }
 }
-@Preview(showBackground = true)
+
 @Composable
-fun showDefault(){
-    DailyJobsTheme() {
-        CardViewPokemons(employees = Employees("Carlos", "Martinez", 24))
+fun RecyclerView(listOfPokemons: List<PokedexProperties>) {
+    LazyColumn(modifier = Modifier.padding(4.dp)) {
+        items(listOfPokemons) {
+            CardView(listOfModel = it)
+        }
     }
 }
+
+@Composable
+fun SearchBar(modifier: Modifier = Modifier, hint: String = "", onSearch: (String) -> Unit = {}) {
+    var text by remember { mutableStateOf("") }
+    var isHintDisplayed by remember { mutableStateOf(hint != "") }
+
+    Box(modifier = modifier) {
+        BasicTextField(
+            value = text, onValueChange = {
+                text = it
+                onSearch(it)
+            },
+            maxLines = 1,
+            singleLine = true,
+            textStyle = TextStyle(color = Color.Black),
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(5.dp, CircleShape)
+                .background(Color.White, CircleShape)
+                .padding(horizontal = 20.dp, vertical = 12.dp)
+                .onFocusChanged { isHintDisplayed = !it.isFocused }
+        )
+        if (isHintDisplayed) {
+            Text(
+                text = hint,
+                color = Color.LightGray,
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun PokemonEntry(
+    pokedexModel: PokemonListEntry,
+    navHost: NavHostController,
+    modifier: Modifier = Modifier,
+) {
+    val pokemonViewModel = viewModel<PokemonViewModel>(factory = ViewModelsFactory)
+    val defaultDominantColor = MaterialTheme.colorScheme.surface
+    var dominantColor by remember { mutableStateOf(defaultDominantColor) }
+
+    Box(
+        contentAlignment = Center,
+        modifier = modifier
+            .shadow(5.dp, RoundedCornerShape(5.dp))
+            .clip(RoundedCornerShape(10.dp))
+            .aspectRatio(1f)
+            .background(Brush.verticalGradient(listOf(dominantColor, defaultDominantColor)))
+            .clickable {
+                navHost.navigate(DestinationScreen.PokemonDetailScreen.withPokemonName("Charmander"))
+            }
+    ) {
+
+    }
+}
+
