@@ -1,5 +1,8 @@
 package com.example.dailyjobs.View.Screens
 
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,7 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,28 +20,28 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
-
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.ActivityNavigator
-
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.dailyjobs.Model.Pokemon2Model.PokedexProperties
 import com.example.dailyjobs.Model.PokemonListModel.PokemonListEntry
 import com.example.dailyjobs.R
 import com.example.dailyjobs.View.DestinationScreen
 import com.example.dailyjobs.ViewModel.PokemonViewModel.PokemonViewModel
 import com.example.dailyjobs.ViewModel.PokemonViewModel.ViewModelsFactory
-import com.example.dailyjobs.ui.theme.DailyJobsTheme
 
 
 @Composable
@@ -48,7 +50,7 @@ fun ScreenPokedex(navHost: NavHostController?) {
         Column {
             Spacer(modifier = Modifier.height(20.dp))
             Image(
-                painterResource(id = R.drawable.pokemon_logo),
+                painterResource(id = com.example.dailyjobs.R.drawable.pokemon_logo),
                 contentDescription = "Pokemon Logo",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -64,6 +66,13 @@ fun ScreenPokedex(navHost: NavHostController?) {
             ) {
 
             }
+            PokemonEntry(
+                pokedexModel = PokemonListEntry(
+                    "Primero",
+                    "https://media.printables.com/media/prints/30233/images/300606_05d12d0c-053b-47c7-a29d-57ec89e338e8/thumbs/inside/1280x960/png/bulbasaur_original.webp",
+                    1
+                ), navHost = navHost
+            )
         }
     }
 }
@@ -136,7 +145,7 @@ fun SearchBar(modifier: Modifier = Modifier, hint: String = "", onSearch: (Strin
 @Composable
 fun PokemonEntry(
     pokedexModel: PokemonListEntry,
-    navHost: NavHostController,
+    navHost: NavHostController?,
     modifier: Modifier = Modifier,
 ) {
     val pokemonViewModel = viewModel<PokemonViewModel>(factory = ViewModelsFactory)
@@ -146,15 +155,73 @@ fun PokemonEntry(
     Box(
         contentAlignment = Center,
         modifier = modifier
-            .shadow(5.dp, RoundedCornerShape(5.dp))
+            .shadow(100.dp, RoundedCornerShape(50.dp))
             .clip(RoundedCornerShape(10.dp))
             .aspectRatio(1f)
             .background(Brush.verticalGradient(listOf(dominantColor, defaultDominantColor)))
             .clickable {
-                navHost.navigate(DestinationScreen.PokemonDetailScreen.withPokemonName("Charmander"))
+                navHost?.navigate(
+                    DestinationScreen.PokemonDetailScreen.withPokemonName(
+                        pokedexModel.name,
+                        null
+                    )
+                )
             }
     ) {
-
+        Column {
+            AsyncImage(
+                ImageRequest.Builder(LocalContext.current)
+                    .data(pokedexModel.image)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = pokedexModel.name,
+                onSuccess = {
+                    pokemonViewModel.calculateDominantColor(it.result.drawable) { newColor ->
+                        dominantColor = newColor
+                    }
+                },
+                modifier = Modifier
+                    .size(120.dp)
+                    .align(CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = pokedexModel.name,
+                style = TextStyle(Color.Black, fontSize = 20.sp, fontStyle = FontStyle.Italic),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
+
+@Composable
+fun PokedexScrolleable(
+    pokedexIndex: Int,
+    entries: List<PokemonListEntry>,
+    navHost: NavHostController,
+) {
+    Column() {
+        Row() {
+            PokemonEntry(
+                pokedexModel = entries[pokedexIndex * 2],
+                navHost = navHost,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(15.dp))
+            if (entries.size >= pokedexIndex*2 +2){
+                PokemonEntry(
+                    pokedexModel = entries[pokedexIndex * 2 + 1],
+                    navHost = navHost,
+                    modifier = Modifier.weight(1f)
+                )
+            }else{
+                Spacer(modifier = Modifier.weight(1f))
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+
 

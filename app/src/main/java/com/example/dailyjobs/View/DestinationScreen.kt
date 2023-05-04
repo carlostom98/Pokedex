@@ -1,5 +1,7 @@
 package com.example.dailyjobs.View
 
+import android.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
@@ -21,7 +23,11 @@ sealed class DestinationScreen(
             "PokemonDetailScreen",
             listOf(NavArgs.PokemonName)
         ) {
-        fun withPokemonName(pokemonName: String?) = pokemonName?.let { "$route/$it" } ?: "$route/Not founded Pokemon"
+        fun withPokemonName(
+            pokemonName: String?,
+            dominantColor: androidx.compose.ui.graphics.Color?,
+        ) = pokemonName?.let { "$route/$it" }
+            ?: "$route/Not founded Pokemon"
     }
 }
 
