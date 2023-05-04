@@ -8,6 +8,9 @@ object ViewModelsFactory : ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(PokemonViewModel::class.java)) {
             return PokemonViewModel() as T
         }
+        if(modelClass.isAssignableFrom(ColorBackGroundViewModel::class.java)){
+            return ColorBackGroundViewModel() as T
+        }
         throw java.lang.IllegalArgumentException("Invalid Paramether")
     }
 }

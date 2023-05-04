@@ -5,11 +5,11 @@ import com.example.dailyjobs.Model.Pokemon2Model.PokemonList
 import com.example.dailyjobs.Resource
 
 class Services(private val retrofitService: ApiService) {
-    suspend fun getPokemonInfo(id: Int): Resource<PokedexProperties> {
+    suspend fun getPokemonInfo(name: String): Resource<PokedexProperties> {
         val response= try {
-            retrofitService.getPokemon(id)
+            retrofitService.getPokemon(name)
         }catch (e:Exception){
-            return Resource.Error("Failed trying to retrieve the Pokemon specific data from the API")
+            return Resource.Error(null, "No pokemon info available")
         }
         return Resource.Succes(response)
     }
@@ -17,7 +17,7 @@ class Services(private val retrofitService: ApiService) {
         val response= try{
             retrofitService.getPokemonList(limit,offset)
         }catch(e:Exception){
-            return Resource.Error("Failed trying to retrieve the Pokemon List")
+            return Resource.Error(null, "No pokemon list achieved")
         }
         return Resource.Succes(response)
     }

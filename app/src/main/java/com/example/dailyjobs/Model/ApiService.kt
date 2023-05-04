@@ -8,8 +8,8 @@ import retrofit2.http.Query
 
 interface ApiService {
     // Get Pokemon
-    @GET("pokemon/{id}")
-    suspend fun getPokemon(@Path("id")id:Int): PokedexProperties
+    @GET("pokemon/{name}")
+    suspend fun getPokemon(@Path("name")name:String): PokedexProperties
 
     @GET("pokemon")
     suspend fun getPokemonList(@Query("limit") limit: Int, @Query("offset") offset:Int): PokemonList
