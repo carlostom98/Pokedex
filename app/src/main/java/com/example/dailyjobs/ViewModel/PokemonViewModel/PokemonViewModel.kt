@@ -46,7 +46,7 @@ class PokemonViewModel() : ViewModel(), KoinComponent {
     val is_error: LiveData<String> get() = _is_error
 
     init {
-        loadPaginatingPokemon()
+        loadPaginatingPokemon(true)
     }
 
     fun getPokemonInfo(name: String) {
@@ -63,12 +63,11 @@ class PokemonViewModel() : ViewModel(), KoinComponent {
                     }
                     is Resource.Error -> {}
                 }
-
             }
         }
     }
 
-    fun loadPaginatingPokemon() {
+    fun loadPaginatingPokemon(scrollOrientation: Boolean) {
         viewModelScope.launch {
             getPokemonList.invoke(Tools.PAGE_SIZE, current_page * Tools.PAGE_SIZE).let { pokeList ->
                 when (pokeList) {
@@ -83,9 +82,10 @@ class PokemonViewModel() : ViewModel(), KoinComponent {
                             val urlImage =
                                 "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/${number}.png"
 
-                            PokemonListEntry(listData.name,urlImage, number)
+                            PokemonListEntry(listData.name, urlImage, number)
                         }.let {
                             _pokemonList.postValue(it)
+                            _is_loading.postValue(false)
                         }
                     }
                     is Resource.Error -> {
@@ -95,6 +95,6 @@ class PokemonViewModel() : ViewModel(), KoinComponent {
                 }
             }
         }
-        current_page++
+        if (scrollOrientation) current_page++ else current_page--
     }
 }

@@ -1,17 +1,22 @@
 package com.example.dailyjobs.View
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -26,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.dailyjobs.Model.PokemonListModel.PokemonListEntry
 import com.example.dailyjobs.ViewModel.PokemonViewModel.ColorBackGroundViewModel
@@ -35,21 +41,28 @@ import org.koin.androidx.compose.get
 
 @Composable
 fun PokemonRecyclerView(navHost: NavHostController?, pokemonViewModel: PokemonViewModel = get()) {
-  /*  val isSuccesObserver by pokemonViewModel.is_succes.observeAsState(false)
     val isErrorObserver by pokemonViewModel.is_error.observeAsState("")
-    val isLoadingObserver by pokemonViewModel.is_loading.observeAsState(false)*/
+    // val isLoadingObserver by pokemonViewModel.is_loading.observeAsState(false)*/
     val pokeList by pokemonViewModel.pokemonList.observeAsState(emptyList())
-    LazyColumn(contentPadding = PaddingValues(16.dp) ){
-        val itemCout=if(pokeList.size %2 ==0){
-            pokeList.size/2
-        }else{
-            pokeList.size/2 + 1
+    val is_succeced by pokemonViewModel.is_succes.observeAsState(false)
+
+    LazyColumn(contentPadding = PaddingValues(16.dp)) {
+        val itemCout = if (pokeList.size % 2 == 0) {
+            pokeList.size / 2
+        } else {
+            pokeList.size / 2 + 1
         }
-        items(itemCout){
-            if(it>=itemCout -1){
-                pokemonViewModel.loadPaginatingPokemon()
+        items(itemCout) { index ->
+            if (index == itemCout - 1 && !is_succeced) {
+                pokemonViewModel.loadPaginatingPokemon(true)
             }
-            PokedexScrolleable(pokedexIndex = it, entries =pokeList , navHost =navHost!! )
+            PokedexScrolleable(pokedexIndex = index, entries = pokeList, navHost = navHost!!)
+            Log.d("DATA_COUNT", "DATA: $index")
+        }
+    }
+
+    if (isErrorObserver.isNotEmpty()) {
+        InternetErrorMessage(error = isErrorObserver) {
         }
     }
 }
@@ -114,18 +127,21 @@ fun PokemonEntry(
             }
     ) {
         Column {
-            AsyncImage(
+            SubcomposeAsyncImage(
                 ImageRequest.Builder(LocalContext.current)
                     .data(pokedexModel.image)
                     .crossfade(true)
                     .build(),
                 contentDescription = pokedexModel.name,
+                loading = {
+                    CircularProgressIndicator(color = Color.White)
+                },
                 onSuccess = {
                     colorBackGViewModel.calculateDominantColor(it.result.drawable)
                 },
                 modifier = Modifier
                     .size(120.dp)
-                    .align(Alignment.CenterHorizontally)
+                    .align(Alignment.CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
@@ -157,6 +173,7 @@ fun PokedexScrolleable(
                 navHost = navHost,
                 modifier = Modifier.weight(1f)
             )
+
             Spacer(modifier = Modifier.width(15.dp))
             if (entries.size >= pokedexIndex * 2 + 2) {
                 PokemonEntry(
@@ -169,6 +186,19 @@ fun PokedexScrolleable(
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+@Composable
+fun InternetErrorMessage(error: String, onError: () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column() {
+            Text(text = error, style = TextStyle(color = Color.Red))
+            Spacer(modifier = Modifier.height(50.dp))
+            Button(onClick = { onError() }, modifier = Modifier.align(CenterHorizontally)) {
+                Text(text = "TRY AGAIN")
+            }
+        }
     }
 }
 
