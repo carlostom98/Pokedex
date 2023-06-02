@@ -5,10 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -53,11 +55,7 @@ fun PokemonRecyclerView(navHost: NavHostController?, pokemonViewModel: PokemonVi
             pokeList.size / 2 + 1
         }
         items(itemCout) { index ->
-            if (index == itemCout - 1 && !is_succeced) {
-                pokemonViewModel.loadPaginatingPokemon(true)
-            }
             PokedexScrolleable(pokedexIndex = index, entries = pokeList, navHost = navHost!!)
-            Log.d("DATA_COUNT", "DATA: $index")
         }
     }
 
@@ -67,6 +65,17 @@ fun PokemonRecyclerView(navHost: NavHostController?, pokemonViewModel: PokemonVi
     }
 }
 
+@Composable
+fun PaginateButtons(pokemonViewModel: PokemonViewModel = get()) {
+    val pokeList by pokemonViewModel.pokemonList.observeAsState(emptyList())
+    LazyRow(){
+        items(pokeList.size) {index->
+            Button(onClick = {pokemonViewModel.loadPaginatingPokemon(index)}) {
+                Text(text = "${index+1}")
+            }
+        }
+    }
+}
 
 @Composable
 fun SearchBar(modifier: Modifier = Modifier, hint: String = "", onSearch: (String) -> Unit = {}) {
@@ -173,7 +182,6 @@ fun PokedexScrolleable(
                 navHost = navHost,
                 modifier = Modifier.weight(1f)
             )
-
             Spacer(modifier = Modifier.width(15.dp))
             if (entries.size >= pokedexIndex * 2 + 2) {
                 PokemonEntry(

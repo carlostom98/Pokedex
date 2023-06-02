@@ -1,11 +1,7 @@
 package com.example.dailyjobs.View.Screens
 
-import androidx.compose.animation.core.FiniteAnimationSpec
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
+
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 
 import androidx.compose.material3.*
@@ -20,8 +16,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.dailyjobs.Model.PokemonListModel.PokemonListEntry
-import com.example.dailyjobs.View.PokemonEntry
+import com.example.dailyjobs.View.PaginateButtons
 import com.example.dailyjobs.View.PokemonRecyclerView
 import com.example.dailyjobs.View.SearchBar
 
@@ -50,6 +45,7 @@ fun ScreenPokedex(navHost: NavHostController?) {
             ) {
 
             }
+            PaginateButtons()
             PokemonRecyclerView(navHost)
         }
     }

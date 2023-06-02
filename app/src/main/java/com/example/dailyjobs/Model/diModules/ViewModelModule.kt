@@ -7,6 +7,6 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val moduleVM = module {
-    viewModel<PokemonViewModel> ()
+    single { PokemonViewModel()}
     viewModel<ColorBackGroundViewModel> ()
 }

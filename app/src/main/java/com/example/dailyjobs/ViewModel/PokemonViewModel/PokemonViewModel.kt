@@ -34,7 +34,6 @@ class PokemonViewModel() : ViewModel(), KoinComponent {
     private var _pokemonInfo = MutableLiveData<PokedexProperties>()
     val pokemonInfo: LiveData<PokedexProperties> get() = _pokemonInfo
 
-    private var current_page = 0
     private var _pokemonList = MutableLiveData<List<PokemonListEntry>>()
     private var _is_succes = MutableLiveData<Boolean>()
     private var _is_loading = MutableLiveData<Boolean>()
@@ -46,7 +45,7 @@ class PokemonViewModel() : ViewModel(), KoinComponent {
     val is_error: LiveData<String> get() = _is_error
 
     init {
-        loadPaginatingPokemon(true)
+        loadPaginatingPokemon(0)
     }
 
     fun getPokemonInfo(name: String) {
@@ -67,12 +66,12 @@ class PokemonViewModel() : ViewModel(), KoinComponent {
         }
     }
 
-    fun loadPaginatingPokemon(scrollOrientation: Boolean) {
+    fun loadPaginatingPokemon(pageNumber: Int) {
         viewModelScope.launch {
-            getPokemonList.invoke(Tools.PAGE_SIZE, current_page * Tools.PAGE_SIZE).let { pokeList ->
+            getPokemonList.invoke(Tools.PAGE_SIZE, (pageNumber) * Tools.PAGE_SIZE).let { pokeList ->
                 when (pokeList) {
                     is Resource.Succes -> {
-                        _is_succes.postValue(current_page * Tools.PAGE_SIZE >= pokeList.data!!.count)
+                        _is_succes.postValue(pageNumber * Tools.PAGE_SIZE >= pokeList.data!!.count)
                         pokeList.data.results.map { listData ->
                             val number = if (listData.url.endsWith("/")) {
                                 listData.url.dropLast(1).takeLastWhile { it.isDigit() }
@@ -95,6 +94,5 @@ class PokemonViewModel() : ViewModel(), KoinComponent {
                 }
             }
         }
-        if (scrollOrientation) current_page++ else current_page--
     }
 }
