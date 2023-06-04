@@ -1,14 +1,15 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.gms.google-services'
 }
 
 android {
-    namespace 'com.example.dailyjobs'
+    namespace 'com.example.pokemonapp'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.dailyjobs"
+        applicationId "com.example.pokemonapp"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -91,4 +92,10 @@ dependencies {
     // Navigation Graph
     implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
     implementation "io.insert-koin:koin-androidx-compose:$koin_android_version"
+
+    //Firebase implementations
+    implementation 'com.google.firebase:firebase-analytics:21.3.0'
+    implementation 'com.google.firebase:firebase-auth:22.0.0'
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
+
 }
