@@ -7,17 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:262567266085:android:07f548614bee6ac344bccc",
+        "mobilesdk_app_id": "1:262567266085:android:d96c61911c7eafbb44bccc",
         "android_client_info": {
-          "package_name": "com.example.pokemonapp"
+          "package_name": "com.elaniin.pokeapptest"
         }
       },
       "oauth_client": [
         {
-          "client_id": "262567266085-7vc6tj88fg9q0d806eired0edahcq4te.apps.googleusercontent.com",
+          "client_id": "262567266085-amn0f8acpuldnsnbgok4dhu8rr5m3p1n.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.pokemonapp",
+            "package_name": "com.elaniin.pokeapptest",
             "certificate_hash": "ccc5aa61190f6f603eec9b7e97c7aae51012de33"
           }
         },

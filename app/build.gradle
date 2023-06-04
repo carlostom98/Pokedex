@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.pokemonapp'
+    namespace 'com.elaniin.pokeapptest'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.pokemonapp"
+        applicationId "com.elaniin.pokeapptest"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -55,6 +55,7 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation 'androidx.compose.material3:material3:1.0.0-alpha11'
+    implementation 'com.google.firebase:firebase-auth-ktx:22.0.0'
 
     //Three libraries needed
     testImplementation 'junit:junit:4.13.2'
