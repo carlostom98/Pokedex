@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface IAuth {
     fun googleSignIn(credential:AuthCredential): Flow<Resource<AuthResult>>
+    fun googleSignOut():Flow<Resource<Boolean>>
 }

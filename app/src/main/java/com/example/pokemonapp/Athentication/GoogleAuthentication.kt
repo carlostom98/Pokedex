@@ -9,13 +9,23 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-class GoogleAuthentication():IAuth{
+class GoogleAuthentication() : IAuth {
     private val firebaseAuth = FirebaseAuth.getInstance()
     override fun googleSignIn(credential: AuthCredential): Flow<Resource<AuthResult>> {
-        return flow{
+        return flow {
             emit(Resource.Loading())
             val result = firebaseAuth.signInWithCredential(credential).await()
             emit(Resource.Succes(result))
+        }.catch {
+            emit(Resource.Error(null, it.message.toString()))
+        }
+    }
+
+    override  fun googleSignOut():Flow<Resource<Boolean>> {
+        return flow {
+            emit(Resource.Loading(true))
+            firebaseAuth.signOut()
+            emit(Resource.Succes(true))
         }.catch {
             emit(Resource.Error(null, it.message.toString()))
         }
