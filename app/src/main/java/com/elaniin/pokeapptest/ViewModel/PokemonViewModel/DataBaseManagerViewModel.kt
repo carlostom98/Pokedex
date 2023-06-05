@@ -5,9 +5,7 @@ import com.elaniin.pokeapptest.FirebaseDataBase.DataBaseManager
 import com.elaniin.pokeapptest.FirebaseDataBase.DataBasePokemon
 
 class DataBaseManagerViewModel(private val dbManager:DataBaseManager):ViewModel() {
-
     fun saveData(dataBasePokemon: DataBasePokemon){
         dbManager.saveData(dataBasePokemon)
     }
-
 }
