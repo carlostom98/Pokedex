@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,13 +25,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.elaniin.pokeapptest.Tools.Tools
 import com.elaniin.pokeapptest.View.DestinationScreen
 import com.elaniin.pokeapptest.View.PaginateButtons
 import com.elaniin.pokeapptest.View.PokemonRecyclerView
 import com.elaniin.pokeapptest.View.SearchBar
+import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.PokemonsSelectedViewModel
 import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.SignInViewModel
 import org.koin.androidx.compose.get
 
@@ -38,6 +42,9 @@ import org.koin.androidx.compose.get
 fun ScreenPokedex(navHost: NavHostController?) {
     val context = LocalContext.current
     val signInViewModel: SignInViewModel = get()
+    val pokemonsSelected: PokemonsSelectedViewModel = get()
+    val isReached by pokemonsSelected.quantityAchieve.observeAsState(false)
+
     val signOutState by signInViewModel.googleSignOutState.observeAsState()
     Surface(color = MaterialTheme.colorScheme.primary) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -54,11 +61,23 @@ fun ScreenPokedex(navHost: NavHostController?) {
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 SearchBar(
-                    hint = "Search Pokemon By Name...", modifier = Modifier
+                    hint = "Nombre Grupo Pokemon", modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
 
+                }
+                if (isReached!!) {
+                    Button(
+                        onClick = { /*TODO*/ },
+                        Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .height(50.dp)
+                            .fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(Color.Yellow)
+                    ) {
+                        Text(text = "Crear Grupo", textAlign = TextAlign.Center)
+                    }
                 }
                 PaginateButtons()
                 PokemonRecyclerView(navHost)

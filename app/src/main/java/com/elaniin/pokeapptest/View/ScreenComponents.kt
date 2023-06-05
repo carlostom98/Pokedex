@@ -8,21 +8,29 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -32,8 +40,11 @@ import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.elaniin.pokeapptest.Model.PokemonListModel.PokemonListEntry
+import com.elaniin.pokeapptest.R
+import com.elaniin.pokeapptest.Tools.Tools
 import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.ColorBackGroundViewModel
 import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.PokemonViewModel
+import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.PokemonsSelectedViewModel
 import org.koin.androidx.compose.get
 
 
@@ -64,10 +75,10 @@ fun PokemonRecyclerView(navHost: NavHostController?, pokemonViewModel: PokemonVi
 @Composable
 fun PaginateButtons(pokemonViewModel: PokemonViewModel = get()) {
     val pokeList by pokemonViewModel.pokemonList.observeAsState(emptyList())
-    LazyRow(){
-        items(pokeList.size) {index->
-            Button(onClick = {pokemonViewModel.loadPaginatingPokemon(index)}) {
-                Text(text = "${index+1}")
+    LazyRow() {
+        items(pokeList.size) { index ->
+            Button(onClick = { pokemonViewModel.loadPaginatingPokemon(index) }) {
+                Text(text = "${index + 1}")
             }
         }
     }
@@ -111,9 +122,10 @@ fun PokemonEntry(
     colorBackGViewModel: ColorBackGroundViewModel = get(),
     modifier: Modifier = Modifier,
 ) {
-
+    val pokemonsSelected: PokemonsSelectedViewModel = get()
     val defaultDominantColor = MaterialTheme.colorScheme.surface
     var dominantColor by remember { mutableStateOf(defaultDominantColor) }
+    var selectedState by remember { mutableStateOf(false) }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -122,14 +134,6 @@ fun PokemonEntry(
             .clip(RoundedCornerShape(10.dp))
             .aspectRatio(1f)
             .background(Brush.verticalGradient(listOf(dominantColor, defaultDominantColor)))
-            .clickable {
-                navHost?.navigate(
-                    DestinationScreen.PokemonDetailScreen.withPokemonName(
-                        pokedexModel.name,
-                        null
-                    )
-                )
-            }
     ) {
         Column {
             SubcomposeAsyncImage(
@@ -146,7 +150,7 @@ fun PokemonEntry(
                 },
                 modifier = Modifier
                     .size(120.dp)
-                    .align(Alignment.CenterHorizontally),
+                    .align(CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
@@ -155,6 +159,30 @@ fun PokemonEntry(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+        Column(modifier = Modifier.align(BottomEnd)) {
+            Row() {
+                IconButton(
+                    onClick = {
+                        selectedState = !selectedState
+                        if (selectedState) {
+                            pokemonsSelected.addPokemon()
+                        } else {
+                            pokemonsSelected.removePokemon()
+                        }
+                    },
+                ) {
+                    Icon(
+                        painter = if (!selectedState) painterResource(id = R.drawable.hearticon_contorn) else painterResource(
+                            id = R.drawable.hearticon_red
+                        ),
+                        contentDescription = "Arrow dropdown",
+                        tint = Color.Red,
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+            }
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 

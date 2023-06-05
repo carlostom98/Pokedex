@@ -1,6 +1,7 @@
 package com.elaniin.pokeapptest.Model
 
 import com.elaniin.pokeapptest.Tools.Tools
+import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.PokemonsSelectedViewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,5 +22,8 @@ val appModule = module {
     }
     single {
         GetPokemonList(get())
+    }
+    single {
+        PokemonsSelectedViewModel()
     }
 }
