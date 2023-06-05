@@ -29,11 +29,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.elaniin.pokeapptest.FirebaseDataBase.DataBasePokemon
 import com.elaniin.pokeapptest.Tools.Tools
 import com.elaniin.pokeapptest.View.DestinationScreen
 import com.elaniin.pokeapptest.View.PaginateButtons
 import com.elaniin.pokeapptest.View.PokemonRecyclerView
 import com.elaniin.pokeapptest.View.SearchBar
+import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.DataBaseManagerViewModel
 import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.PokemonsSelectedViewModel
 import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.SignInViewModel
 import org.koin.androidx.compose.get
@@ -41,8 +43,12 @@ import org.koin.androidx.compose.get
 @Composable
 fun ScreenPokedex(navHost: NavHostController?) {
     val context = LocalContext.current
+    var textGroup by remember {
+        mutableStateOf("")
+    }
     val signInViewModel: SignInViewModel = get()
     val pokemonsSelected: PokemonsSelectedViewModel = get()
+    val databaseManager: DataBaseManagerViewModel = get()
     val isReached by pokemonsSelected.quantityAchieve.observeAsState(false)
 
     val signOutState by signInViewModel.googleSignOutState.observeAsState()
@@ -65,11 +71,15 @@ fun ScreenPokedex(navHost: NavHostController?) {
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
-
+                    textGroup=it
                 }
-                if (isReached!!) {
+                if (isReached) {
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                                  if(textGroup.isNotEmpty()){
+                                      databaseManager.saveData(textGroup)
+                                  }
+                        },
                         Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .height(50.dp)
@@ -78,6 +88,16 @@ fun ScreenPokedex(navHost: NavHostController?) {
                     ) {
                         Text(text = "Crear Grupo", textAlign = TextAlign.Center)
                     }
+                }
+                Button(
+                    onClick = { /*TODO*/ },
+                    Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .height(50.dp)
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(Color.Yellow)
+                ) {
+                    Text(text = "VerMisGrupos", textAlign = TextAlign.Center)
                 }
                 PaginateButtons()
                 PokemonRecyclerView(navHost)

@@ -173,7 +173,7 @@ fun PokemonEntry(
                         } else {
                             pokemonsSelected.removePokemon()
                         }
-                        databaseViewModel.saveData(DataBasePokemon("Grupo 1", pokedexModel))
+                        databaseViewModel.addPokemon(pokedexModel)
                     },
                 ) {
                     Icon(
