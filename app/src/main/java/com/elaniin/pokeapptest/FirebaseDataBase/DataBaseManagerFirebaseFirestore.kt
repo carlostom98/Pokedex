@@ -58,7 +58,6 @@ class DataBaseManagerFirebaseFirestore : DataBaseImplementation {
                     )
                 }
             }
-            Log.d("POKEMONES_LIST", "$listToPlot")
             val combinedList = listToPlot.groupBy { it.groupName }.map { (_, group) ->
                 val combinedValues = group.flatMap { it.pokemonValues!! }
                 DataBasePokemon(group.first().groupName, combinedValues.toMutableList())

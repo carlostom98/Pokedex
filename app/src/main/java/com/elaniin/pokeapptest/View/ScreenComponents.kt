@@ -64,7 +64,7 @@ fun PokemonRecyclerView(navHost: NavHostController?, pokemonViewModel: PokemonVi
             pokeList.size / 2 + 1
         }
         items(itemCout) { index ->
-            PokedexScrolleable(pokedexIndex = index, entries = pokeList, navHost = navHost!!)
+            PokedexScrolleable(pokedexIndex = index, entries = pokeList)
         }
     }
 
@@ -120,7 +120,6 @@ fun SearchBar(modifier: Modifier = Modifier, hint: String = "", onSearch: (Strin
 @Composable
 fun PokemonEntry(
     pokedexModel: PokemonListEntry,
-    navHost: NavHostController?,
     colorBackGViewModel: ColorBackGroundViewModel = get(),
     modifier: Modifier = Modifier,
 ) {
@@ -201,20 +200,17 @@ fun PokemonEntry(
 fun PokedexScrolleable(
     pokedexIndex: Int,
     entries: List<PokemonListEntry>,
-    navHost: NavHostController,
 ) {
     Column() {
         Row() {
             PokemonEntry(
                 pokedexModel = entries[pokedexIndex * 2],
-                navHost = navHost,
                 modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(15.dp))
             if (entries.size >= pokedexIndex * 2 + 2) {
                 PokemonEntry(
                     pokedexModel = entries[pokedexIndex * 2 + 1],
-                    navHost = navHost,
                     modifier = Modifier.weight(1f)
                 )
             } else {
