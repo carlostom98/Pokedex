@@ -2,6 +2,7 @@ package com.elaniin.pokeapptest.FirebaseDataBase
 
 import com.elaniin.pokeapptest.Model.PokemonListModel.PokemonListEntry
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.flow.Flow
 
 class DataBaseRTDB:DataBaseImplementation {
     private val database=FirebaseDatabase.getInstance()
@@ -24,8 +25,9 @@ class DataBaseRTDB:DataBaseImplementation {
 
     }
 
-    override fun retrieveData() {
-
+    override fun retrieveData(callback: (List<DataBasePokemon>) -> Unit) {
+        TODO("Not yet implemented")
     }
+
 
 }

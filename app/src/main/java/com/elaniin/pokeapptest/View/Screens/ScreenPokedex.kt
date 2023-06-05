@@ -71,33 +71,17 @@ fun ScreenPokedex(navHost: NavHostController?) {
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
-                    textGroup=it
+                    textGroup = it
                 }
                 if (isReached) {
-                    Button(
-                        onClick = {
-                                  if(textGroup.isNotEmpty()){
-                                      databaseManager.saveData(textGroup)
-                                  }
-                        },
-                        Modifier
-                            .clip(RoundedCornerShape(10.dp))
-                            .height(50.dp)
-                            .fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(Color.Yellow)
-                    ) {
-                        Text(text = "Crear Grupo", textAlign = TextAlign.Center)
+                    ButtonConfirmAndViewGroups(text = "Crear Grupo") {
+                        if (textGroup.isNotEmpty()) {
+                            databaseManager.saveData(textGroup)
+                        }
                     }
                 }
-                Button(
-                    onClick = { /*TODO*/ },
-                    Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .height(50.dp)
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(Color.Yellow)
-                ) {
-                    Text(text = "VerMisGrupos", textAlign = TextAlign.Center)
+                ButtonConfirmAndViewGroups(text = "Ver Mis Grupos") {
+                    navHost?.navigate(DestinationScreen.PokemonDetailScreen.withPokemonName("SecondScreen", Color.Yellow))
                 }
                 PaginateButtons()
                 PokemonRecyclerView(navHost)
@@ -126,6 +110,24 @@ fun ScreenPokedex(navHost: NavHostController?) {
         if (signOutState!!.isSignOutProcessSucces) {
             Toast.makeText(context, "Sign Out Succes", Toast.LENGTH_SHORT).show()
             navHost?.navigate(DestinationScreen.RegisterScreen.baseRoute)
+        }
+    }
+}
+
+@Composable
+fun ButtonConfirmAndViewGroups(text: String, onClick: () -> Unit) {
+    Box(modifier = Modifier.padding(10.dp)) {
+        Button(
+            onClick = {
+                onClick()
+            },
+            Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .height(50.dp)
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(Color.Yellow)
+        ) {
+            Text(text = text, textAlign = TextAlign.Center, color = Color.Black)
         }
     }
 }
