@@ -1,7 +1,9 @@
 package com.elaniin.pokeapptest.Model.diModules
 
 import com.elaniin.pokeapptest.Athentication.GoogleAuthentication
+import com.elaniin.pokeapptest.FirebaseDataBase.DataBaseManager
 import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.ColorBackGroundViewModel
+import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.DataBaseManagerViewModel
 import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.PokemonViewModel
 import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.SignInViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -11,5 +13,7 @@ val moduleVM = module {
     single { PokemonViewModel()}
     single { SignInViewModel(get())}
     single { GoogleAuthentication() }
+    single { DataBaseManagerViewModel(get()) }
+    single { DataBaseManager() }
     viewModel<ColorBackGroundViewModel> ()
 }

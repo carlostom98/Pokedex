@@ -39,10 +39,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.elaniin.pokeapptest.FirebaseDataBase.DataBasePokemon
 import com.elaniin.pokeapptest.Model.PokemonListModel.PokemonListEntry
 import com.elaniin.pokeapptest.R
 import com.elaniin.pokeapptest.Tools.Tools
 import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.ColorBackGroundViewModel
+import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.DataBaseManagerViewModel
 import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.PokemonViewModel
 import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.PokemonsSelectedViewModel
 import org.koin.androidx.compose.get
@@ -123,6 +125,7 @@ fun PokemonEntry(
     modifier: Modifier = Modifier,
 ) {
     val pokemonsSelected: PokemonsSelectedViewModel = get()
+    val databaseViewModel: DataBaseManagerViewModel = get()
     val defaultDominantColor = MaterialTheme.colorScheme.surface
     var dominantColor by remember { mutableStateOf(defaultDominantColor) }
     var selectedState by remember { mutableStateOf(false) }
@@ -170,6 +173,7 @@ fun PokemonEntry(
                         } else {
                             pokemonsSelected.removePokemon()
                         }
+                        databaseViewModel.saveData(DataBasePokemon("Grupo 1", pokedexModel.name))
                     },
                 ) {
                     Icon(
