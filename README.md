@@ -400,6 +400,43 @@ Your 'huella digital' will appear when you execute a gradle task with *signingRe
 
 Copy and paste your SHA-1 into firebase console.
 
+Implement the following lines into your build.gradle (project):
+
+```groovy
+dependencies {
+        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath 'com.google.gms:google-services:4.3.15'
+    }
+```
+Also
+
+```groovy
+repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+```
+
+And, into your build.gradle(app)
+
+```groovy
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'com.google.gms.google-services'
+}
+```
+
+And 
+
+```groovy
+ implementation platform('com.google.firebase:firebase-bom:32.0.0')
+    implementation 'com.google.firebase:firebase-analytics:21.3.0'
+    implementation 'com.google.firebase:firebase-auth:22.0.0'
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
+```
+
 I've created my Authentication package:
 
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/f25195e7-8478-443e-bac8-a4425822f6f4)
