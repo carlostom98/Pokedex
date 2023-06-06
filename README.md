@@ -559,10 +559,10 @@ The Tools.TOKEN_GOOGLE_CLIENT
 Is your client ID, found it here:
 
 
+
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/a2bc8c2b-a426-4980-a3a7-e9e539150868)
 
-
-![image](https://github.com/carlostom98/Pokedex/assets/66192349/21351df0-982c-4c6f-a732-208fc50d8341)
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/0484e214-53d7-40fe-9d98-4dbcd24f45c4)
 
 
 Create as a constant as the link to API:
@@ -838,7 +838,7 @@ New Results, implementing the data for each user Id:
 Both registered:
 
 
-![image](https://github.com/carlostom98/Pokedex/assets/66192349/a4469f56-5802-411e-83c1-ce91c6401303)
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/81e0188f-8043-40c3-984d-8f71475ccf48)
 
 
 
