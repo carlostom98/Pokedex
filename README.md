@@ -400,6 +400,73 @@ Your 'huella digital' will appear when you execute a gradle task with *signingRe
 
 Copy and paste your SHA-1 into firebase console.
 
+I've created my Authentication package:
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/f25195e7-8478-443e-bac8-a4425822f6f4)
+
+Contain the business logic to make the google SignIn and SignOut
+
+
+```kotlin
+class GoogleAuthentication() : IAuth {
+    private val firebaseAuth = FirebaseAuth.getInstance()
+    override fun googleSignIn(credential: AuthCredential): Flow<Resource<AuthResult>> {
+        return flow {
+            emit(Resource.Loading())
+            val result = firebaseAuth.signInWithCredential(credential).await()
+            emit(Resource.Succes(result))
+        }.catch {
+            emit(Resource.Error(null, it.message.toString()))
+        }
+    }
+
+    override  fun googleSignOut():Flow<Resource<Boolean>> {
+        return flow {
+            emit(Resource.Loading(true))
+            firebaseAuth.signOut()
+            emit(Resource.Succes(true))
+        }.catch {
+            emit(Resource.Error(null, it.message.toString()))
+        }
+    }
+}
+```
+
+This class extend from IAuth in case we want to change or add auth modes:
+
+- Email
+- GitHub
+- Facebook 
+
+We only have to create another Class which extends from IAuth and set the business logic.
+
+Here I also implemented flow to set another way to use suspend funcs, the we go to our DataBaseManagerViewModel and create the functions to serve the results to UI, DON'T FORGET TO ADD TO OUR KOIN MODULES TO MAKE THE DI WITH GET():
+
+```kotkin
+val moduleVM = module {
+    single { PokemonViewModel()}
+    single { SignInViewModel(get())}
+    single { GoogleAuthentication() }
+    single { DataBaseManagerViewModel(get()) }
+    single<DataBaseImplementation>{ DataBaseManagerFirebaseFirestore() }
+    viewModel<ColorBackGroundViewModel> ()
+}
+```
+
+Finally we can go to create our UI, *RegisterScreen*, inject our viewModel: *val signInViewModel: SignInViewModel = get()*
+
+And make the logic with the coroutine LaunchedEffect, if we can SignIn, the application will navigate to the *ScreenPokedex* using our navHost and our sealed class.
+
+```kotlin
+LaunchedEffect(key1 = googleSignInState?.isSignProcessSucces) {
+        if(googleSignInState?.isSignProcessSucces !=null){
+            Toast.makeText(context, "Sign In Succes", Toast.LENGTH_SHORT).show()
+            navHost.navigate(DestinationScreen.PokedexScreen.baseRoute)
+        }
+    }
+```
+
+Here The result in UI:
 
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/ccd9c3b7-28f1-4a82-b917-d2c8e5d5e1ed)
 
@@ -409,6 +476,9 @@ Copy and paste your SHA-1 into firebase console.
 
 Firebase LogedIn users
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/c86e6426-836d-4a55-959f-639495881d57)
+
+
+*FACEBOOK LOGIN IS NOT IMPLEMENTED YET*
 
 
 ## FIREBASE FIRESTORE DATABASE
