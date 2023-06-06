@@ -4,6 +4,32 @@ Create a new project using JetpackCompose:
 
 [New Compose Project](https://developer.android.com/jetpack/compose/setup?hl=es-419#:~:text=If%20you%20already%20have%20an,location%20as%20you%20normally%20would.)
 
+MAIN ACTIVITY:
+
+Call the Navigation method explained later, setting your main compose screen aplication, we also create a navigationHost to navigate among the different screens:
+
+
+```kotlin
+class MainActivity : ComponentActivity(){
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            val navigationHost= rememberNavController()
+            DailyJobsTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    NavigateScreens(navigationHost = navigationHost, this)
+                }
+            }
+        }
+    }
+}
+```
+
 *IMPORTANT:* Be care about your JDK version
 
 This repository contains the first version of a PokeApp where you can:
@@ -519,6 +545,14 @@ Here The result in UI:
 
 Firebase LogedIn users
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/c86e6426-836d-4a55-959f-639495881d57)
+
+
+You can close your account 
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/b0883876-4825-4fad-a15f-e4ebe012cc31)
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/8a0934ce-543b-4423-a73e-777a8a4ec33c)
+
 
 
 *FACEBOOK LOGIN IS NOT IMPLEMENTED YET*
