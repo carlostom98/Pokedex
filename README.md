@@ -594,8 +594,6 @@ Here The result in UI:
 
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/a432ed80-4cc4-42e9-a9a0-7e5041094d37)
 
-Firebase LogedIn users
-![image](https://github.com/carlostom98/Pokedex/assets/66192349/c86e6426-836d-4a55-959f-639495881d57)
 
 
 You can close your account 
