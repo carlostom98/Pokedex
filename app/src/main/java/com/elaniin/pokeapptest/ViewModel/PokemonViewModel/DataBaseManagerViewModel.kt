@@ -18,6 +18,10 @@ class DataBaseManagerViewModel(private val dbManager:DataBaseImplementation):Vie
     fun addPokemon(pokemon:PokemonListEntry){
         dbManager.addPokemon(pokemon)
     }
+
+    fun removeAllPokemon(){
+        dbManager.removeData()
+    }
     fun getAllPokemonsInDB(userId: String){
         dbManager.retrieveData(userId) {
             it.let {

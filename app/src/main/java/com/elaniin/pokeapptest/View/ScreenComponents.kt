@@ -1,5 +1,6 @@
 package com.elaniin.pokeapptest.View
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -169,10 +170,13 @@ fun PokemonEntry(
                         selectedState = !selectedState
                         if (selectedState) {
                             pokemonsSelected.addPokemon()
+                            databaseViewModel.addPokemon(pokedexModel)
+                            Log.d("ADD_OR_REMOVE", "ADD" )
                         } else {
                             pokemonsSelected.removePokemon()
+                            databaseViewModel.removePokemon(pokedexModel)
+                            Log.d("ADD_OR_REMOVE", "REMOVE" )
                         }
-                        databaseViewModel.addPokemon(pokedexModel)
                     },
                 ) {
                     Icon(

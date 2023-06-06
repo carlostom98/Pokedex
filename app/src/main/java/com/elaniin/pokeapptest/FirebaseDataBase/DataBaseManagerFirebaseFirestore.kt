@@ -42,7 +42,7 @@ class DataBaseManagerFirebaseFirestore (): DataBaseImplementation {
     }
 
     override fun removeData() {
-
+        listOfPokemons.clear()
     }
 
     override  fun retrieveData(userId: String,callback:(List<DataBasePokemon>)->Unit){

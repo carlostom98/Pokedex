@@ -50,6 +50,8 @@ fun ScreenPokedex(navHost: NavHostController?, userId:String) {
     val pokemonsSelected: PokemonsSelectedViewModel = get()
     val databaseManager: DataBaseManagerViewModel = get()
     val isReached by pokemonsSelected.quantityAchieve.observeAsState(false)
+    pokemonsSelected.restartCount()
+
 
     val signOutState by signInViewModel.googleSignOutState.observeAsState()
     Surface(color = MaterialTheme.colorScheme.primary) {
@@ -77,6 +79,9 @@ fun ScreenPokedex(navHost: NavHostController?, userId:String) {
                     ButtonConfirmAndViewGroups(text = "Crear Grupo") {
                         if (textGroup.isNotEmpty()) {
                             databaseManager.saveData(textGroup, userId)
+                            Toast.makeText(context, "Grupo Creado", Toast.LENGTH_LONG).show()
+                        }else{
+                            Toast.makeText(context, "Tienes que darle un nombre", Toast.LENGTH_LONG).show()
                         }
                     }
                 }

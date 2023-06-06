@@ -42,6 +42,8 @@ fun PokemonInformation(userId:String) {
 
     val databaseManager: DataBaseManagerViewModel = get()
     databaseManager.getAllPokemonsInDB(userId)
+    databaseManager.removeAllPokemon()
+
     var listPaginated by remember {
         mutableStateOf(listOf(DataBasePokemon("", null)))
     }
