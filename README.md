@@ -565,13 +565,15 @@ Is your client ID, found it here:
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/21351df0-982c-4c6f-a732-208fc50d8341)
 
 
-Create as a constant:
-
+Create as a constant as the link to API:
+```kotlin
 object Tools {
     const val urlPokemonApi="https://pokeapi.co/api/v2/"
     const val PAGE_SIZE=20
     const val TOKEN_GOOGLE_CLIENT="262567266085-j7keglmu9o4v2tblgumat7ouvtkf2kr7.apps.googleusercontent.com"
 }
+```
+
 
 And make the logic with the coroutine LaunchedEffect, if we can SignIn, the application will navigate to the *ScreenPokedex* using our navHost and our sealed class.
 
