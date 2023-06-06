@@ -780,6 +780,69 @@ Firestore database view
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/722eca11-0fe6-416b-b9d9-9e7263d5d088)
 
 
+BUG FIXED, EACH USER CAN TAKE ITS ID TO ACCES TO ITS DATA, RETRIEVING THE user.uID into the class GooglAuthentication:
+
+```kotlin
+override fun googleSignIn(credential: AuthCredential): Flow<Resource<LoginResult>> {
+        return flow {
+            emit(Resource.Loading())
+            val result = firebaseAuth.signInWithCredential(credential).await()
+            val user=firebaseAuth.currentUser
+            if(user != null){
+                emit(Resource.Succes(LoginResult(result, user.uid)))
+                Log.d("USER_ID", user.uid)
+            }
+        }.catch {
+            emit(Resource.Error(null, it.message.toString()))
+        }
+    }
+```
+
+Returning the result and user ID with a data model:
+
+```kotlin
+class LoginResult(val result:AuthResult, val userId: String)
+```
+
+New Results, implementing the data for each user Id:
+
+### USER 1:
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/3bf64a02-336a-4856-8bf5-657fd2db7cd7)
+
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/65236f1e-31dd-44ec-9e3d-38f022530cf8)
+
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/942ae280-4103-4b06-b88e-4b4f7134553c)
+
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/5a45926c-3ab9-49bc-9aa0-26e2eb4e313e)
+
+
+### USER 2:
+
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/289a2497-aca6-4b5a-a573-e2771f2e5855)
+
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/0c218397-6227-48a3-aba0-8535aa74deca)
+
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/51d9238d-4726-47aa-8816-7e00d848aa28)
+
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/2701ec64-8b73-430e-b2f3-227ff19c4d98)
+
+
+Both registered:
+
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/a4469f56-5802-411e-83c1-ce91c6401303)
+
+
+
+
 
 THE APPLICATION HAVE SOME ERRORS SO FAR. 
 
