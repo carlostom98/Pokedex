@@ -4,6 +4,32 @@ Create a new project using JetpackCompose:
 
 [New Compose Project](https://developer.android.com/jetpack/compose/setup?hl=es-419#:~:text=If%20you%20already%20have%20an,location%20as%20you%20normally%20would.)
 
+MAIN ACTIVITY:
+
+Call the Navigation method explained later, setting your main compose screen aplication, we also create a navigationHost to navigate among the different screens:
+
+
+```kotlin
+class MainActivity : ComponentActivity(){
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            val navigationHost= rememberNavController()
+            DailyJobsTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    NavigateScreens(navigationHost = navigationHost, this)
+                }
+            }
+        }
+    }
+}
+```
+
 *IMPORTANT:* Be care about your JDK version
 
 This repository contains the first version of a PokeApp where you can:
@@ -498,6 +524,57 @@ val moduleVM = module {
 
 Finally we can go to create our UI, *RegisterScreen*, inject our viewModel: *val signInViewModel: SignInViewModel = get()*
 
+
+Create your launcher, to launch the implicit intent aiming to google register, look that here is wher we activate our viewModelFunction:
+
+```kotlin
+ val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+            val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+            try {
+                val result = account.getResult(ApiException::class.java)
+                val credentials = GoogleAuthProvider.getCredential(result.idToken, null)
+                signInViewModel.googleSignIn(credentials)
+            } catch (it: ApiException) {
+                Log.d("EXCEPTION_LOGIN", "${it.message}")
+            }
+        }
+
+```
+
+Launch this event with your onClick google button 
+```kotlin
+ButtonRegister(text = "Google Register") {
+                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestEmail()
+                        .requestIdToken(Tools.TOKEN_GOOGLE_CLIENT)
+                        .build()
+                    val googleSignInClient = GoogleSignIn.getClient(context, gso)
+                    launcher.launch(googleSignInClient.signInIntent)
+                }
+```
+
+The Tools.TOKEN_GOOGLE_CLIENT
+
+Is your client ID, found it here:
+
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/a2bc8c2b-a426-4980-a3a7-e9e539150868)
+
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/21351df0-982c-4c6f-a732-208fc50d8341)
+
+
+Create as a constant as the link to API:
+```kotlin
+object Tools {
+    const val urlPokemonApi="https://pokeapi.co/api/v2/"
+    const val PAGE_SIZE=20
+    const val TOKEN_GOOGLE_CLIENT="262567266085-j7keglmu9o4v2tblgumat7ouvtkf2kr7.apps.googleusercontent.com"
+}
+```
+
+
 And make the logic with the coroutine LaunchedEffect, if we can SignIn, the application will navigate to the *ScreenPokedex* using our navHost and our sealed class.
 
 ```kotlin
@@ -519,6 +596,14 @@ Here The result in UI:
 
 Firebase LogedIn users
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/c86e6426-836d-4a55-959f-639495881d57)
+
+
+You can close your account 
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/b0883876-4825-4fad-a15f-e4ebe012cc31)
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/8a0934ce-543b-4423-a73e-777a8a4ec33c)
+
 
 
 *FACEBOOK LOGIN IS NOT IMPLEMENTED YET*
@@ -679,6 +764,10 @@ ENJOY YOUR APP:
 
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/99ad199a-8871-420c-8cf9-3d88a4beab5a)
 
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/ea84c3e5-7c5b-42e3-8117-c5c561cc30d5)
+
+
 Firestore database view
 
 
@@ -686,6 +775,10 @@ Firestore database view
 
 
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/542c5131-bd01-456d-9f8f-8594ab5653bf)
+
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/722eca11-0fe6-416b-b9d9-9e7263d5d088)
+
 
 
 THE APPLICATION HAVE SOME ERRORS SO FAR. 
