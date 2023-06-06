@@ -86,6 +86,14 @@ Why koin?... Let's see with the API REST
 
 ### API REST
 
+To import:
+
+```groovy
+//Retrofit Libraries
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+```
+
 We will find everything about API REST here:
 
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/6fc600a8-70ee-4de2-83da-db4dc79a07f1)
@@ -249,6 +257,8 @@ class PokemonViewModel() : ViewModel(), KoinComponent {
 }
 ```
 
+*IMPORTANT:* Look that the process is running on a coroutine viewModelScope.launch, and the invoke. is a suspend functiond this is maded to keep our main thread free.
+
 Now the UI, the UI is maded with JetpackCompose technology:
 
 [JetpackCompose Documentation](https://developer.android.com/jetpack/compose?hl=es-419)
@@ -268,6 +278,125 @@ Then:
 - ScreenComponents: Where I create a lot of different reusable components in Compose.
 - Navigate: Which manage our Screen Navigation and, if we want to share some data between.
 - DestinationScreen: Which is a sealed class optimized to call our different screens and make easier the data sharing.
+
+Within **ScreenPokedex** you can see the compose of the Pokemons Screen:  
+
+Basically we inject the viewModel and use the observer pattern to update our LazyColumn depend of the page where we are. The method getPokemonList, split the data in ranges of 20 pokemons and set the pokemons in our UI, once we download the data from the API.
+
+**IMPORTANT DETAIL**: To handle our data better, I created the Resource class, allow the aplication manage when the Repository or business logic failed, is loading or is succes.
+
+The result of our navigation pokemons screen is:
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/45bd4d08-d46e-491d-8a0a-602975618c74)
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/a70bf3b0-500e-40e2-a1d5-e47887f29e78)
+
+*What about Color BackGroundViewModel and PokemonSelectedViewModel?* Take a look into your ScreenComponents.kt and found the fun called 
+PokemonEntry()
+
+```kotlin
+fun PokemonEntry(
+    pokedexModel: PokemonListEntry,
+    colorBackGViewModel: ColorBackGroundViewModel = get(),
+    modifier: Modifier = Modifier,
+) {
+    val pokemonsSelected: PokemonsSelectedViewModel = get()
+    val databaseViewModel: DataBaseManagerViewModel = get()
+    val defaultDominantColor = MaterialTheme.colorScheme.surface
+    var dominantColor by remember { mutableStateOf(defaultDominantColor) }
+    var selectedState by remember { mutableStateOf(false) }
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .shadow(100.dp, RoundedCornerShape(50.dp))
+            .clip(RoundedCornerShape(10.dp))
+            .aspectRatio(1f)
+            .background(Brush.verticalGradient(listOf(dominantColor, defaultDominantColor)))
+    ) {
+        Column {
+            SubcomposeAsyncImage(
+                ImageRequest.Builder(LocalContext.current)
+                    .data(pokedexModel.image)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = pokedexModel.name,
+                loading = {
+                    CircularProgressIndicator(color = Color.White)
+                },
+                onSuccess = {
+                    colorBackGViewModel.calculateDominantColor(it.result.drawable)
+                },
+                modifier = Modifier
+                    .size(120.dp)
+                    .align(CenterHorizontally),
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = pokedexModel.name,
+                style = TextStyle(Color.Black, fontSize = 20.sp, fontStyle = FontStyle.Italic),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        Column(modifier = Modifier.align(BottomEnd)) {
+            Row() {
+                IconButton(
+                    onClick = {
+                        selectedState = !selectedState
+                        if (selectedState) {
+                            pokemonsSelected.addPokemon()
+                        } else {
+                            pokemonsSelected.removePokemon()
+                        }
+                        databaseViewModel.addPokemon(pokedexModel)
+                    },
+                ) {
+                    Icon(
+                        painter = if (!selectedState) painterResource(id = R.drawable.hearticon_contorn) else painterResource(
+                            id = R.drawable.hearticon_red
+                        ),
+                        contentDescription = "Arrow dropdown",
+                        tint = Color.Red,
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+        }
+    }
+```
+
+You'll see that this @Composable element create our Pokemon Boxes, So this two viewModel classes will make the brush effect and add or remove our selected pokemons to our future groups.
+
+## Firebase configuration
+
+
+## FIREBASE LOGIN SERVICES
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/ccd9c3b7-28f1-4a82-b917-d2c8e5d5e1ed)
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/d243c624-21eb-434c-b224-ea4398f2e294)
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/a432ed80-4cc4-42e9-a9a0-7e5041094d37)
+
+Firebase LogedIn users
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/c86e6426-836d-4a55-959f-639495881d57)
+
+
+## FIREBASE FIRESTORE DATABASE
+selected button
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/f8535158-ad80-4857-8474-3000ae7ace0c)
+more than three pokemons
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/b072ed5d-c91a-4002-aca7-49a4eb4946cf)
+Group Name
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/bc81bcee-28cb-496b-850e-cf7b6101c268)
+Data collected from Firestore Database
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/26b76e09-f0ea-43b5-acdd-4845f31dd67f)
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/99ad199a-8871-420c-8cf9-3d88a4beab5a)
+Firestore view
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/8ef48309-7064-43be-9b00-7285b9c83ce6)
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/542c5131-bd01-456d-9f8f-8594ab5653bf)
 
 
 
