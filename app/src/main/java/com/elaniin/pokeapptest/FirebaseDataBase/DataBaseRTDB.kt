@@ -16,18 +16,16 @@ class DataBaseRTDB:DataBaseImplementation {
         TODO("Not yet implemented")
     }
 
-    override fun saveData(nameGroup: String) {
+    override fun saveData(nameGroup: String, userId: String) {
         TODO("Not yet implemented")
     }
-
 
     override fun removeData() {
 
     }
 
-    override fun retrieveData(callback: (List<DataBasePokemon>) -> Unit) {
+    override fun retrieveData(userId: String,callback: (List<DataBasePokemon>) -> Unit) {
         TODO("Not yet implemented")
     }
-
 
 }

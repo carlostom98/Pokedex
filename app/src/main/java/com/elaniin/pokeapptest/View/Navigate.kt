@@ -16,17 +16,20 @@ fun NavigateScreens(navigationHost: NavHostController, activity:MainActivity) {
         composable(DestinationScreen.RegisterScreen.baseRoute) {
             RegisterScreen(navHost = navigationHost)
         }
-        composable(DestinationScreen.PokedexScreen.baseRoute) {
-            ScreenPokedex(navHost = navigationHost)
+        composable(DestinationScreen.PokedexScreen.baseRoute, arguments = DestinationScreen.PokedexScreen.navArgument) {backEntry->
+            val userId= remember {
+                backEntry.arguments?.getString(NavArgs.UserId.key)
+            }
+            ScreenPokedex(navHost = navigationHost, userId=userId!!)
         }
         composable(
             DestinationScreen.PokemonDetailScreen.baseRoute,
             arguments = DestinationScreen.PokemonDetailScreen.navArgument
         ) { backStackEntry ->
-            val pokemonName = remember {
-                backStackEntry.arguments?.getString(NavArgs.PokemonName.key)
+            val userId = remember {
+                backStackEntry.arguments?.getString(NavArgs.UserId.key)
             }
-            PokemonInformation(pokemonName = pokemonName)
+            PokemonInformation(userId = userId!!)
         }
     }
 }

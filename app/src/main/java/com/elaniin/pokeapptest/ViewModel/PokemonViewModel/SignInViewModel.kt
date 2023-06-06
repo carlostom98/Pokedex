@@ -19,14 +19,19 @@ class SignInViewModel(private val googleAuthentication:GoogleAuthentication): Vi
     val googleState:LiveData<SignInState> get() = _googleState
     val googleSignOutState:LiveData<SignOutResult> get() = _googleSignOutState
 
+    private val _currentUser=MutableLiveData<String>()
+    val currentUser:LiveData<String> get()= _currentUser
+
+
 
     fun googleSignIn(credential: AuthCredential)=viewModelScope.launch {
         googleAuthentication.googleSignIn(credential).collect(){result->
             when(result){
                 is Resource.Succes -> {
-                    _googleState.postValue(SignInState(isSignProcessSucces = result.data))
+                    _googleState.postValue(SignInState(isSignProcessSucces = result.data!!.result))
                     _googleSignOutState.postValue(SignOutResult(isSignOutProcessSucces = false))
                     _googleSignOutState.postValue(SignOutResult(isLoading = false))
+                    _currentUser.postValue(result.data.userId)
                 }
                 is Resource.Loading -> {
                     _googleState.postValue(SignInState(isLoading = true))

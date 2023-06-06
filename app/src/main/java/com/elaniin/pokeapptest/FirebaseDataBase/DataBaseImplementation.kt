@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface DataBaseImplementation {
     fun addPokemon(pokemonListEntry: PokemonListEntry)
     fun removePokemon(pokemonListEntry: PokemonListEntry)
-    fun saveData(nameGroup: String)
+    fun saveData(nameGroup: String, userId:String)
     fun removeData()
-     fun retrieveData(callback:(List<DataBasePokemon>)->Unit)
+     fun retrieveData(userId: String,callback:(List<DataBasePokemon>)->Unit)
 }

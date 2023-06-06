@@ -15,23 +15,21 @@ sealed class DestinationScreen(
         navArgument(it.key) { it.type }
     }
 
-    object PokedexScreen : DestinationScreen("PokedexScreen")
+    object PokedexScreen : DestinationScreen("PokedexScreen", listOf(NavArgs.UserId)){
+        fun withUserId(userId:String)= userId.let {  "$route/$it"  }
+    }
     object RegisterScreen : DestinationScreen("RegisterScreen")
     object PokemonDetailScreen :
         DestinationScreen(
             "PokemonDetailScreen",
-            listOf(NavArgs.PokemonName)
+            listOf(NavArgs.UserId)
         ) {
-        fun withPokemonName(
-            pokemonName: String?,
-            dominantColor: androidx.compose.ui.graphics.Color?,
-        ) = pokemonName?.let { "$route/$it" }
-            ?: "$route/Not founded Pokemon"
+        fun withUserId(userId:String)= userId.let {  "$route/$it"  }
     }
 }
 
 enum class NavArgs(val key: String, val type: NavType<*>) {
-    DominantColor("dominantColor", NavType.IntType),
+    UserId("userID", NavType.StringType),
     PokemonName("pokemonName", NavType.StringType),
     PokemonImage("urlImage", NavType.StringType)
 }

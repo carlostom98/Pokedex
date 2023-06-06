@@ -38,10 +38,10 @@ import org.koin.androidx.compose.get
 import kotlin.math.log
 
 @Composable
-fun PokemonInformation(pokemonName: String?) {
+fun PokemonInformation(userId:String) {
 
     val databaseManager: DataBaseManagerViewModel = get()
-    databaseManager.getAllPokemonsInDB()
+    databaseManager.getAllPokemonsInDB(userId)
     var listPaginated by remember {
         mutableStateOf(listOf(DataBasePokemon("", null)))
     }

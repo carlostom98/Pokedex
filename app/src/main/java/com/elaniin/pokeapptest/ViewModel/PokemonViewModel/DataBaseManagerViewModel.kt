@@ -12,14 +12,14 @@ import kotlinx.coroutines.launch
 class DataBaseManagerViewModel(private val dbManager:DataBaseImplementation):ViewModel() {
     private val _pokemonFromDB= MutableLiveData<List<DataBasePokemon>>()
     val pokemonFromDB:LiveData<List<DataBasePokemon>> get() = _pokemonFromDB
-    fun saveData(nameGroup: String){
-        dbManager.saveData(nameGroup)
+    fun saveData(nameGroup: String, userId:String){
+        dbManager.saveData(nameGroup, userId)
     }
     fun addPokemon(pokemon:PokemonListEntry){
         dbManager.addPokemon(pokemon)
     }
-    fun getAllPokemonsInDB(){
-        dbManager.retrieveData {
+    fun getAllPokemonsInDB(userId: String){
+        dbManager.retrieveData(userId) {
             it.let {
                 _pokemonFromDB.postValue(it)
             }

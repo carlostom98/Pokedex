@@ -91,6 +91,8 @@ dependencies {
     //Koin DI
     implementation "io.insert-koin:koin-android:$koin_android_version"
     implementation "io.insert-koin:koin-android-compat:$koin_android_version"
+    implementation 'io.insert-koin:koin-core:3.x.x'
+    implementation 'io.insert-koin:koin-android:3.x.x'
 
     // Navigation Graph
     implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"

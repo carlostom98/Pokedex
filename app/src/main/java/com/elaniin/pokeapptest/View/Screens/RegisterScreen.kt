@@ -14,7 +14,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +51,9 @@ fun RegisterScreen(navHost: NavHostController) {
     val signInViewModel: SignInViewModel = get()
 
     val googleSignInState by  signInViewModel.googleState.observeAsState()
+    val signUser by  signInViewModel.currentUser.observeAsState()
+    var userToShare by remember{ mutableStateOf("") }
+
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
@@ -84,9 +90,14 @@ fun RegisterScreen(navHost: NavHostController) {
     }
 
     LaunchedEffect(key1 = googleSignInState?.isSignProcessSucces) {
-        if(googleSignInState?.isSignProcessSucces !=null){
+        if(googleSignInState?.isSignProcessSucces !=null && userToShare != ""){
             Toast.makeText(context, "Sign In Succes", Toast.LENGTH_SHORT).show()
-            navHost.navigate(DestinationScreen.PokedexScreen.baseRoute)
+            navHost.navigate(DestinationScreen.PokedexScreen.withUserId(userToShare))
+        }
+    }
+    LaunchedEffect(key1 = signUser ){
+        signUser?.let {
+            userToShare=it
         }
     }
 }

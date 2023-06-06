@@ -1,6 +1,9 @@
 package com.elaniin.pokeapptest.Athentication
 
+import android.util.Log
+import com.elaniin.pokeapptest.FirebaseDataBase.LoginResult
 import com.elaniin.pokeapptest.Resource
+import com.elaniin.pokeapptest.Tools.Tools
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -11,11 +14,15 @@ import kotlinx.coroutines.tasks.await
 
 class GoogleAuthentication() : IAuth {
     private val firebaseAuth = FirebaseAuth.getInstance()
-    override fun googleSignIn(credential: AuthCredential): Flow<Resource<AuthResult>> {
+    override fun googleSignIn(credential: AuthCredential): Flow<Resource<LoginResult>> {
         return flow {
             emit(Resource.Loading())
             val result = firebaseAuth.signInWithCredential(credential).await()
-            emit(Resource.Succes(result))
+            val user=firebaseAuth.currentUser
+            if(user != null){
+                emit(Resource.Succes(LoginResult(result, user.uid)))
+                Log.d("USER_ID", user.uid)
+            }
         }.catch {
             emit(Resource.Error(null, it.message.toString()))
         }

@@ -41,7 +41,7 @@ import com.elaniin.pokeapptest.ViewModel.PokemonViewModel.SignInViewModel
 import org.koin.androidx.compose.get
 
 @Composable
-fun ScreenPokedex(navHost: NavHostController?) {
+fun ScreenPokedex(navHost: NavHostController?, userId:String) {
     val context = LocalContext.current
     var textGroup by remember {
         mutableStateOf("")
@@ -76,12 +76,12 @@ fun ScreenPokedex(navHost: NavHostController?) {
                 if (isReached) {
                     ButtonConfirmAndViewGroups(text = "Crear Grupo") {
                         if (textGroup.isNotEmpty()) {
-                            databaseManager.saveData(textGroup)
+                            databaseManager.saveData(textGroup, userId)
                         }
                     }
                 }
                 ButtonConfirmAndViewGroups(text = "Ver Mis Grupos") {
-                    navHost?.navigate(DestinationScreen.PokemonDetailScreen.withPokemonName("SecondScreen", Color.Yellow))
+                    navHost?.navigate(DestinationScreen.PokemonDetailScreen.withUserId(userId))
                 }
                 PaginateButtons()
                 PokemonRecyclerView(navHost)
