@@ -1,5 +1,11 @@
 # Pokedex
 
+Create a new project using JetpackCompose:
+
+[New Compose Project](https://developer.android.com/jetpack/compose/setup?hl=es-419#:~:text=If%20you%20already%20have%20an,location%20as%20you%20normally%20would.)
+
+*IMPORTANT:* Be care about your JDK version
+
 This repository contains the first version of a PokeApp where you can:
 - LogIn.LogOut.
 - Navigate among the PokeApi [PokeApiV2](https://pokeapi.co/)
@@ -519,19 +525,170 @@ Firebase LogedIn users
 
 
 ## FIREBASE FIRESTORE DATABASE
-selected button
+First, create our FirestoreDatabase service:
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/d35b7116-b0a5-4e4b-beb9-7e35c81035ba)
+
+Then we have to enroll our project follow next steps into your AndroidStudio:
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/20437538-d66d-40b3-8dea-296e8ad13f3e)
+
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/21cbf239-04d9-479e-82ab-2fb39ee32979)
+
+Select: *Get started with Java* and follow the instructions:
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/6f2b8718-d422-463d-bde8-d8a4117aba0b)
+
+or
+
+```groovy
+ implementation 'com.google.firebase:firebase-database-ktx'
+```
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/7d85ea0e-8a3f-4610-b0e1-8c0100bc02e8)
+
+The Interface will allow us to change between the different implementations of Database, to make DI we set it as a koin module:
+
+```kotlin
+single<DataBaseImplementation>{ DataBaseManagerFirebaseFirestore() }
+```
+
+This says to the app Which Interface Class implementation have to use, for example if you see the DatabaseRTDB() class, also extends from DataBaseImplementation Interface, if we want to set another data base we just have to change the previos class (DataBaseManagerFirebaseFirestore()) for (DatabaseRTDB) between the keys.
+
+
+But now we want to use FirestoreFirebase
+
+Our class will save the Business logic:
+
+```kotlin
+class DataBaseManagerFirebaseFirestore : DataBaseImplementation {
+    private val database = FirebaseFirestore.getInstance()
+    private val listOfPokemons = mutableListOf<PokemonListEntry>()
+    private val collection = "PokemonGroups"
+    override fun addPokemon(pokemonListEntry: PokemonListEntry) {
+        listOfPokemons.add(pokemonListEntry)
+        Log.d("POKEMONS_ADDED", "${listOfPokemons}")
+    }
+
+    override fun removePokemon(pokemonListEntry: PokemonListEntry) {
+        listOfPokemons.remove(pokemonListEntry)
+        Log.d("POKEMONS_ADDED", "${listOfPokemons}")
+    }
+
+    override fun saveData(nameGroup: String) {
+        val dataBasePokemon = DataBasePokemon(nameGroup, listOfPokemons)
+        val groupDocRef = database.collection(collection).document(dataBasePokemon.groupName)
+        val pokemonesList = mutableListOf<Map<String, Any>>()
+        dataBasePokemon.pokemonValues?.forEach { pokemon ->
+            val pokemonData = hashMapOf(
+                "nombre" to pokemon.name,
+                "imagen" to pokemon.image
+            )
+            pokemonesList.add(pokemonData)
+        }
+        groupDocRef.set(hashMapOf("Pokemones" to pokemonesList))
+    }
+
+    override fun removeData() {
+
+    }
+
+    override  fun retrieveData(callback:(List<DataBasePokemon>)->Unit){
+
+        val listToPlot = mutableListOf<DataBasePokemon>()
+        database.collection(collection).get().addOnSuccessListener {result->
+            for (documentos in result) {
+                val pokemonsArray =
+                    documentos.get("Pokemones") as? ArrayList<HashMap<String, String>>
+                pokemonsArray?.forEach { pokemonesData ->
+                    val nombre = pokemonesData["nombre"]
+                    val imagen = pokemonesData["imagen"]
+                    listToPlot.add(
+                        DataBasePokemon(
+                            documentos.id,
+                            mutableListOf(PokemonListEntry(nombre.toString(), imagen.toString()))
+                        )
+                    )
+                }
+            }
+            val combinedList = listToPlot.groupBy { it.groupName }.map { (_, group) ->
+                val combinedValues = group.flatMap { it.pokemonValues!! }
+                DataBasePokemon(group.first().groupName, combinedValues.toMutableList())
+            }
+            callback(combinedList)
+        }
+    }
+}
+```
+Basically it will add or remove a pokemon to the previous list item, based in the model data *DataBasePokemon()*
+
+Then you could send this to the database or get information from the data base.
+
+
+Our *DataBaseManagerViewModel* will serve our retrieve data to our UI, using LiveData as always:
+
+```kotlin
+class DataBaseManagerViewModel(private val dbManager:DataBaseImplementation):ViewModel() {
+    private val _pokemonFromDB= MutableLiveData<List<DataBasePokemon>>()
+    val pokemonFromDB:LiveData<List<DataBasePokemon>> get() = _pokemonFromDB
+    fun saveData(nameGroup: String){
+        dbManager.saveData(nameGroup)
+    }
+    fun addPokemon(pokemon:PokemonListEntry){
+        dbManager.addPokemon(pokemon)
+    }
+    fun getAllPokemonsInDB(){
+        dbManager.retrieveData {
+            it.let {
+                _pokemonFromDB.postValue(it)
+            }
+        }
+    }
+    fun removePokemon(pokemon:PokemonListEntry){
+        dbManager.removePokemon(pokemon)
+    }
+}
+```
+
+Our LastScreen *PokemonInformation*
+
+Show us our different groups from Firestore DataBase. Injecting the viewModel with Koin: (val databaseManager: DataBaseManagerViewModel = get())
+
+And reusing some composable elements.
+
+The achieve results next:
+
+We can set a like to our pokemons, and also we have a TextField to set a Group Name.
+
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/f8535158-ad80-4857-8474-3000ae7ace0c)
-more than three pokemons
+
+When you have selected more than three pokemons, the Create Group Button is enabled.
+
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/b072ed5d-c91a-4002-aca7-49a4eb4946cf)
-Group Name
+
+Set a Group Name to can create your Group.
+
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/bc81bcee-28cb-496b-850e-cf7b6101c268)
-Data collected from Firestore Database
+
+ENJOY YOUR APP:
+
+(Data retrieve from FirestoreDatabase)
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/26b76e09-f0ea-43b5-acdd-4845f31dd67f)
+
+
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/99ad199a-8871-420c-8cf9-3d88a4beab5a)
-Firestore view
+
+Firestore database view
+
+
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/8ef48309-7064-43be-9b00-7285b9c83ce6)
+
+
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/542c5131-bd01-456d-9f8f-8594ab5653bf)
 
+
+THE APPLICATION HAVE SOME ERRORS SO FAR. 
 
 
 
