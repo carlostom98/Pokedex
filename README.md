@@ -780,7 +780,7 @@ Firestore database view
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/722eca11-0fe6-416b-b9d9-9e7263d5d088)
 
 
-BUG FIXED, EACH USER CAN TAKE ITS ID TO ACCES TO ITS DATA, RETRIEVING THE user.uID into the class GooglAuthentication:
+BUG FIXED, Each user can access their data through their id, with user.uid into the class GooglAuthentication:
 
 ```kotlin
 override fun googleSignIn(credential: AuthCredential): Flow<Resource<LoginResult>> {
