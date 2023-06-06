@@ -369,10 +369,37 @@ fun PokemonEntry(
 
 You'll see that this @Composable element create our Pokemon Boxes, So this two viewModel classes will make the brush effect and add or remove our selected pokemons to our future groups.
 
-## Firebase configuration
+## FIREBASE CONFIGURATION
+Get into firebase and create a new proyect:
+
+Follow this steps to connect your firebase and begin a new project to enroll your app:
+
+[Firebase and Android Studio](https://developer.android.com/studio/write/firebase?hl=es-419#:~:text=Primero%2C%20aseg%C3%BArate%20de%20haber%20agregado,una%20de%20las%20funciones%20enumeradas.)
+
+Make sure you have the google.jsn file here in your project view:
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/88315211-cf97-4608-aa51-cafa84d9afa5)
 
 
 ## FIREBASE LOGIN SERVICES
+
+First, add the authentication service to your app, next enable the Google and Facebook Login:
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/91b02530-3b9d-499f-9914-424608a73ce3)
+
+
+Add your 'Huella digital' in your project configuration
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/fe35cc2e-c8af-47ec-b353-8597de1c57c9)
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/4f2d2154-6fd5-4c30-ade0-3ca1634554a5)
+
+Your 'huella digital' will appear when you execute a gradle task with *signingReport* command
+
+![image](https://github.com/carlostom98/Pokedex/assets/66192349/7158bac4-a924-4312-8c69-64cdbe8a773a)
+
+Copy and paste your SHA-1 into firebase console.
+
 
 ![image](https://github.com/carlostom98/Pokedex/assets/66192349/ccd9c3b7-28f1-4a82-b917-d2c8e5d5e1ed)
 
