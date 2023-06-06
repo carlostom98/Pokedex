@@ -94,7 +94,7 @@ fun ScreenPokedex(navHost: NavHostController?) {
                 colors = ButtonDefaults.buttonColors(Color.Transparent)
             ) {
                 Text(
-                    text = "Cerrar sesión",
+                    text = "Cerrar cesión",
                     style = TextStyle(
                         fontFamily = FontFamily.Cursive,
                         fontStyle = FontStyle.Italic,
